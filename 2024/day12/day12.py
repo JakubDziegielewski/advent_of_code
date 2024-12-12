@@ -6,7 +6,7 @@ class Field:
         self.row = row
         self.column = column
         self.top_left = (row, column)
-        self.fences = 0
+        self.fences = np.array([0, 0, 0, 0])
     def __repr__(self) -> str:
         return f"{self.symbol}, ({self.row}, {self.column})"
 
@@ -20,11 +20,11 @@ with open("input.txt") as f:
             fields[i][j] = Field(char, i, j)
             top_lefts[fields[i][j].top_left] = [fields[i][j]]
             if i == size - 1:
-                fields[i, j].fences += 1
+                fields[i, j].fences[2] = 1
             if j == size - 1:
-                fields[i, j].fences += 1
+                fields[i, j].fences[1] = 1
             if i == 0:
-                fields[i,j].fences += 1
+                fields[i,j].fences[0] = 1
             elif fields[i][j].symbol == fields[i - 1, j].symbol:
                 current_top_left = fields[i, j].top_left
                 other_top_left = fields[i - 1, j].top_left
@@ -49,10 +49,10 @@ with open("input.txt") as f:
                         field.top_left = current_top_left
                     top_lefts.pop(other_top_left)
             else:
-                fields[i, j].fences += 1
-                fields[i - 1, j].fences += 1
+                fields[i, j].fences[0] = 1
+                fields[i - 1, j].fences[2] = 1
             if j == 0:
-                fields[i,j].fences += 1
+                fields[i,j].fences[3] += 1
             elif fields[i][j].symbol == fields[i, j - 1].symbol:
                 current_top_left = fields[i, j].top_left
                 other_top_left = fields[i, j - 1].top_left
@@ -77,11 +77,28 @@ with open("input.txt") as f:
                         field.top_left = current_top_left
                     top_lefts.pop(other_top_left)
             else:
-                fields[i, j].fences += 1
-                fields[i, j - 1].fences += 1
+                fields[i, j].fences[3] += 1
+                fields[i, j - 1].fences[1] += 1
 
 result = 0
 for k in top_lefts.keys():
-    result += len(top_lefts[k]) * sum([x.fences for x in top_lefts[k]])
+    result += len(top_lefts[k]) * sum([sum(x.fences) for x in top_lefts[k]])
 print(result)
-
+result = 0
+for k in top_lefts.keys():
+    sides = list()
+    number_of_sides = 0
+    for item in top_lefts[k]:
+        indices = np.where(item.fences == 1)
+        for index in indices[0]:
+                sides.append((item.row, item.column, index))
+        number_of_sides = 0
+    for s in sides:
+        if s[2] % 2 == 0:
+            if (s[0], s[1] + 1, s[2]) not in sides:
+                number_of_sides += 1
+        else:
+            if (s[0] + 1, s[1], s[2]) not in sides:
+                number_of_sides += 1
+    result += len(top_lefts[k]) * number_of_sides
+print(result)
