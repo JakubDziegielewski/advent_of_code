@@ -28,9 +28,9 @@ for i in range(0, len(lines), 4):
     m21, m22 = int(array_two[2][2:-1]), int(array_two[3][2:])
     p1, p2 = 10000000000000 + int(array_three[1][2:-1]), 10000000000000 + int(array_three[2][2:])
     a2 = (p2 * m11 - p1 * m12) / (m11 * m22 - m12 * m21)
-    if a2.is_integer():
+    if a2.is_integer() and a2 >= 0:
         a1 = (p1 - a2 * m21) / m11
-        if a1.is_integer():
+        if a1.is_integer() and a1 >= 0:
             result += 3 * int(a1) + int(a2)
 end = time()
 print(result)
