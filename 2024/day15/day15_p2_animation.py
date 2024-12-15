@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from matplotlib.animation import FuncAnimation, FFMpegWriter
 from typing import Tuple
-SIZE = 10
+SIZE = 50
 
 
 with open("input.txt") as f:
