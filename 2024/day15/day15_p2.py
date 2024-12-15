@@ -23,10 +23,6 @@ for i, line in enumerate(lines[:SIZE]):
             warehouse[i, real_column] = char
             warehouse[i, real_column + 1] = char
 
-with open("map.txt", 'w') as f:
-    for r in warehouse:
-        f.write("".join(r))
-        f.write("\n")
 moves = "".join([line.strip() for line in lines[SIZE + 1:]])
 
 move_directions = {
