@@ -95,6 +95,8 @@ while len(open_list) > 0:
     current_node.visited = True
     if current_node.heuristic_value == 0:
         results.append(current_node.reaching_value)
+    if len(results) > 0 and current_node.reaching_value + current_node.heuristic_value > results[0]:
+        break 
     for edge in current_node.edges:
         if graph[edge[0], edge[1], edge[2]].visited:
             if edge[3] + current_node.reaching_value == graph[edge[0], edge[1], edge[2]].reaching_value:
@@ -136,5 +138,3 @@ e = time()
 print(results[0])
 print(len(final_set))
 print(e - s) #time ~0.5s
-
-
