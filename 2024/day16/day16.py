@@ -1,5 +1,4 @@
 import numpy as np
-from typing import Tuple
 from heapq import heappop, heappush
 from time import time
 
@@ -33,7 +32,7 @@ with open("input.txt") as f:
     start = np.argwhere(array == "S")[0]
     end = np.argwhere(array == "E")[0]
     graph = np.zeros((len(lines), len(lines), 4), dtype = Node)
-def add_four_nodes(row: int, column: int):
+def add_four_nodes(row: int, column: int) -> None:
     row_tax = 1000 if row != end[0] else 0
     column_tax = 1000 if column != end[1] else 0
     distance = row - end[0] + end[1] - column
@@ -67,7 +66,7 @@ results = []
 graph[start[0], start[1], 0].reaching_value = 0
 open_list = [graph[start[0], start[1], 0]]
 
-def add_parents(edge):
+def add_parents(edge) -> None:
     if edge[3] == 1000:
         if graph[edge[0], edge[1], (edge[2] - 1) % 4].reaching_value is None:
             graph[edge[0], edge[1], edge[2]].parents.add((edge[0], edge[1], (edge[2] + 1) % 4))
@@ -116,7 +115,7 @@ while len(open_list) > 0:
 
     
 
-def create_parent_set(starting_node, parent_set):
+def create_parent_set(starting_node, parent_set) -> None:
     if starting_node.added_to_parents:
         return
     starting_node.added_to_parents = True
