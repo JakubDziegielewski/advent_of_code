@@ -135,6 +135,6 @@ else:
 e = time()
 print(results[0])
 print(len(final_set))
-print(e - s)
+print(e - s) #time ~0.5s
 
 
