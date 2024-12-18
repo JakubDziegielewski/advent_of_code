@@ -41,3 +41,21 @@ while instruction_pointer < len(instructions):
         c = a >> get_combo_operand(operand)
     instruction_pointer += 2
 print(",".join(output))
+
+def find_next(number, depth):
+    number = number << 3
+    numbers = []
+    for i in range(8):
+        num = number + i
+        res = ((num % 8) ^ 3 ^ (num >> ((num % 8) ^ 3) ^ 5)% 8)
+        if res == int(instructions[15 - depth]):
+            numbers.append(num)
+    if depth == 15:
+        print(numbers)
+        return
+    for n in numbers:
+        find_next(n, depth + 1)
+    
+        
+find_next(0, 0)
+        
