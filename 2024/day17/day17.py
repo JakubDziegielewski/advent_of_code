@@ -42,20 +42,54 @@ while instruction_pointer < len(instructions):
     instruction_pointer += 2
 print(",".join(output))
 
+def get_combo(operand, reg_one, reg_two, reg_three):
+    if operand < 4:
+        return operand
+    elif operand == 4:
+        return reg_one
+    elif operand == 5:
+        return reg_two
+    else:
+        return reg_three
+    
+results = []
 def find_next(number, depth):
     number = number << 3
     numbers = []
     for i in range(8):
-        num = number + i
-        res = ((num % 8) ^ 3 ^ (num >> ((num % 8) ^ 3) ^ 5)% 8)
+        reg_two, reg_three = 0, 0
+        init_num = number + i
+        reg_one = init_num
+        instruction_pointer = 0
+        while instruction_pointer < len(instructions):
+            instruction = instructions[instruction_pointer]
+            operand = int(instructions[instruction_pointer + 1])
+            if instruction == "0":
+                reg_one = reg_one >> get_combo(operand, reg_one, reg_two, reg_three)
+            elif instruction == "1":
+                reg_two = reg_two ^ operand
+            elif instruction == "2":
+                reg_two = get_combo(operand, reg_one, reg_two, reg_three) % 8
+            elif instruction == "3":
+                pass
+            elif instruction == "4":
+                reg_two = reg_two ^ reg_three
+            elif instruction == "5":
+                res = get_combo(operand, reg_one, reg_two, reg_three) % 8
+            elif instruction == "6":
+                reg_two = reg_one >> get_combo(operand, reg_one, reg_two, reg_three)
+            else:
+                reg_three = reg_one >> get_combo(operand, reg_one, reg_two, reg_three)
+            instruction_pointer += 2
         if res == int(instructions[15 - depth]):
-            numbers.append(num)
-    if depth == 15:
-        print(numbers)
-        return
+            numbers.append(init_num)
+            if depth == 15:
+                results.append(init_num)
+                return
     for n in numbers:
         find_next(n, depth + 1)
     
         
 find_next(0, 0)
+print(min(results))
         
