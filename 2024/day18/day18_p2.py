@@ -36,6 +36,8 @@ id_counter = 0
 for line in lines:
     array = line.split(",")
     column, row = int(array[0]), int(array[1])
+    if graph[row, column].union_id is not None:
+        continue
     graph[row, column].set_union_id(id_counter)
     unions[id_counter] = Union(id_counter, (row, column))
     unions[id_counter].nodes.append((row, column))
@@ -53,6 +55,18 @@ for line in lines:
     if column < 70:
         if not graph[row, column + 1].union_id is None and graph[row, column + 1].union_id != graph[row, column].union_id:
             unions[graph[row, column + 1].union_id].merge(unions[graph[row, column].union_id])
+    if row > 0 and column > 0:
+        if not graph[row - 1, column - 1].union_id is None and graph[row - 1, column - 1].union_id != graph[row, column].union_id:
+            unions[graph[row - 1, column - 1].union_id].merge(unions[graph[row, column].union_id])
+    if row > 0 and column < 70:
+        if not graph[row - 1, column + 1].union_id is None and graph[row - 1, column + 1].union_id != graph[row, column].union_id:
+            unions[graph[row - 1, column + 1].union_id].merge(unions[graph[row, column].union_id])
+    if row < 70 and column > 0:
+        if not graph[row + 1, column - 1].union_id is None and graph[row + 1, column - 1].union_id != graph[row, column].union_id:
+            unions[graph[row + 1, column - 1].union_id].merge(unions[graph[row, column].union_id])
+    if row < 70 and column < 70:
+        if not graph[row + 1, column + 1].union_id is None and graph[row + 1, column + 1].union_id != graph[row, column].union_id:
+            unions[graph[row + 1, column + 1].union_id].merge(unions[graph[row, column].union_id])
     
     final_union = unions[graph[row, column].union_id]
     if final_union.highest == 0 and final_union.lowest == 70:
