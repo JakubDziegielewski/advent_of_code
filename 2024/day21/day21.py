@@ -1,6 +1,7 @@
 from collections import defaultdict
 from copy import deepcopy
 from heapq import heappop, heappush
+from time import time
 
 KEYBOARD_ONE = [
     ["7", "8", "9"],
@@ -36,6 +37,7 @@ nodes_one = dict()
 nodes_two = dict()
 edges_one = defaultdict(list)
 edges_two = defaultdict(list)
+start = time()
 for i, row in enumerate(KEYBOARD_ONE):
     for j, key in enumerate(row):
         if key == "#":
@@ -63,10 +65,9 @@ with open("2024/day21/input.txt") as f:
     lines = [x.strip() for x in f.readlines()]
 found_paths_one = dict()
 found_paths_two = dict()
-result_strings_one = []
 numbers = [int(x[:3]) for x in lines]
 
-custom_order = {"v": 0, "<": 1, ">": 3, "^": 2}
+custom_order = {"v": 1, "<": 0, ">": 3, "^": 2}
 def process_keyboard(result_strings_previous, used_nodes, used_edges, found_paths, verbose = False) -> list:
     result_strings = []
     for line in result_strings_previous:
@@ -150,22 +151,45 @@ def find_next_states(first_char, final_char, used_nodes, used_edges):
                  final_node.directions = node.directions + [edge.direction]
                  heappush(open_list, final_node)
     return result_string
+        
+result = 0
+res_one = process_keyboard(lines, nodes_one, edges_one, found_paths_one)
+res_two = process_keyboard(res_one, nodes_two, edges_two, found_paths_two)
+res_three = process_keyboard(res_two, nodes_two, edges_two, found_paths_two)
+
+for n, s in zip(numbers, res_three):
+    result += n * len(s)
+print(result)
+key_presses = defaultdict(int)
+next_states = dict()
 chars = ["<", ">", "^", "v", "A"]
 
-transforms = dict()
 for char in chars:
     for c in chars:
-        transforms[(char, c)] = find_next_states(char, c, nodes_two, edges_two)
-        
+        if char == c:
+            next_states[(char, c)] = "A"
+        else:
+            next_states[(char ,c)] = find_next_states(char, c, nodes_two, edges_two)
+            
+for k in next_states.keys():
+    current_string = "".join(k)
+    for i in range(14):
+        temp = "A"
+        for j in range(len(current_string) - 1):
+            temp += next_states[current_string[j], current_string[j + 1]]
+        current_string = temp
+    key_presses[k] = len(current_string) - 1
+for i in range(11):
+    res_one = process_keyboard(res_one, nodes_two, edges_two, found_paths_two)
 
-res_one = process_keyboard(lines, nodes_one, edges_one, found_paths_one)
-res_one = process_keyboard(res_one, nodes_two, edges_two, found_paths_two)
-res_one = process_keyboard(res_one, nodes_two, edges_two, found_paths_two)
 
 result = 0
-
-for s, n in zip(res_one, numbers):
-    result += len(s) * n
+for n, s in zip(numbers, res_one):
+    full_len = 0
+    s = "A" + s
+    for j in range(len(s) - 1):
+        full_len += key_presses[(s[j], s[j+1])]
+    result += full_len * n
+end = time()
 print(result)
-
-
+print(end - start) #Took about 3.5 minutes on my machine
