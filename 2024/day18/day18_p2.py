@@ -1,6 +1,7 @@
 import numpy as np
 with open("2024/day18/input.txt") as f:
     lines = f.readlines()
+SIZE = 70
 class Node:
     def __init__(self):
         self.union_id = None
@@ -25,7 +26,7 @@ class Union:
         self.nodes += other.nodes
        
             
-graph = np.zeros((71, 71), dtype=Node)
+graph = np.zeros((SIZE + 1, SIZE + 1), dtype=Node)
 for i, row in enumerate(graph):
     for j, element in enumerate(row):
         graph[i, j] = Node()
@@ -46,38 +47,40 @@ for line in lines:
     if row > 0:
         if not graph[row - 1, column].union_id is None and graph[row - 1, column].union_id != graph[row, column].union_id:
             unions[graph[row - 1, column].union_id].merge(unions[graph[row, column].union_id])
-    if row < 70:
+    if row < SIZE:
         if not graph[row + 1, column].union_id is None and graph[row + 1, column].union_id != graph[row, column].union_id:
             unions[graph[row + 1, column].union_id].merge(unions[graph[row, column].union_id])
     if column > 0:
         if not graph[row, column - 1].union_id is None and graph[row, column - 1].union_id != graph[row, column].union_id:
             unions[graph[row, column - 1].union_id].merge(unions[graph[row, column].union_id])
-    if column < 70:
+    if column < SIZE:
         if not graph[row, column + 1].union_id is None and graph[row, column + 1].union_id != graph[row, column].union_id:
             unions[graph[row, column + 1].union_id].merge(unions[graph[row, column].union_id])
     if row > 0 and column > 0:
         if not graph[row - 1, column - 1].union_id is None and graph[row - 1, column - 1].union_id != graph[row, column].union_id:
             unions[graph[row - 1, column - 1].union_id].merge(unions[graph[row, column].union_id])
-    if row > 0 and column < 70:
+    if row > 0 and column < SIZE:
         if not graph[row - 1, column + 1].union_id is None and graph[row - 1, column + 1].union_id != graph[row, column].union_id:
             unions[graph[row - 1, column + 1].union_id].merge(unions[graph[row, column].union_id])
-    if row < 70 and column > 0:
+    if row < SIZE and column > 0:
         if not graph[row + 1, column - 1].union_id is None and graph[row + 1, column - 1].union_id != graph[row, column].union_id:
             unions[graph[row + 1, column - 1].union_id].merge(unions[graph[row, column].union_id])
-    if row < 70 and column < 70:
+    if row < SIZE and column < SIZE:
         if not graph[row + 1, column + 1].union_id is None and graph[row + 1, column + 1].union_id != graph[row, column].union_id:
             unions[graph[row + 1, column + 1].union_id].merge(unions[graph[row, column].union_id])
     
     final_union = unions[graph[row, column].union_id]
-    if final_union.highest == 0 and final_union.lowest == 70:
+    if final_union.highest == 0 and final_union.lowest == SIZE:
         print(f"{column},{row}")
         break
-    elif final_union.left == 0 and final_union.right == 70:
+    elif final_union.left == 0 and final_union.right == SIZE:
         print(f"{column},{row}")
         break
     elif final_union.left == 0 and final_union.highest == 0:
         print(f"{column},{row}")
         break
-
+    elif final_union.lowest == SIZE and final_union.right == SIZE:
+        print(f"{column},{row}")
+        break
 
 
