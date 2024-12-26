@@ -1,6 +1,3 @@
-from functools import cache
-from collections import defaultdict
-
 with open("2024/day24/input.txt") as f:
     arr_one = f.read().split("\n\n")
     inputs = arr_one[0].split("\n")
@@ -70,15 +67,6 @@ while calculated_outputs < len(gates):
                 result += 1 << int(logic_gate.output[1:])
             calculated_outputs += 1
 print(result)
-
-
-@cache
-def calculate_reverse(output):
-    if output[0] in "xy":
-        return output
-    rev = reverse[output]
-    return (f"[{rev[0]} {rev[1]} {rev[2]}]")
-
 
 p = None
 wrong_outputs = []
