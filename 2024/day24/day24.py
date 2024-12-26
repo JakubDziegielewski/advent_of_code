@@ -125,6 +125,23 @@ for z in z_outputs:
                     temp = logic_gates["x" + number, "XOR", "y" + number].output
                     logic_gates["x" + number, "XOR", "y" + number].output = xor_one[0]
                     logic_gates[*reverse[xor_one[0]]].output = temp
+            else:
+                wrong_outputs.append(z)
+                out_one = logic_gates["x" + number, "XOR", "y" + number].output
+                if p < out_one:
+                    wrong_outputs.append(logic_gates[p, "XOR", out_one].output)
+                    temp = logic_gates[p, "XOR", out_one].output
+                    logic_gates[p, "XOR", out_one].output = z
+                    logic_gates[*xor_one].output = temp
+                    reverse[z] = [p, "XOR", out_one]
+                    reverse[temp] = xor_one
+                else:
+                    wrong_outputs.append(logic_gates[out_one, "XOR", p].output)
+                    temp = logic_gates[out_one, "XOR", p].output
+                    logic_gates[out_one, "XOR", p].output = z
+                    logic_gates[*xor_one].output = temp
+                    reverse[z] = [p, "XOR", out_one]
+                    reverse[temp] = xor_one
         and_output = logic_gates["x" + number, "AND", "y" + number].output
         xor_output = logic_gates["x" + number, "XOR", "y" + number].output
         if p < xor_output:
